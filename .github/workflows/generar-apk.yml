@@ -1,0 +1,31 @@
+name: Generar APK NOVA X 3.0
+
+on: [push, workflow_dispatch]
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extraer NOVA X
+        run: unzip -q NOVA_X_3_0_YA_KCHE_YA.zip
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Compilar NOVA X
+        run: gradle --no-daemon -p NOVA_X_3_0 :app:assembleDebug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NOVA-X-3-APK
+          path: NOVA_X_3_0/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
